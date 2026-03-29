@@ -61,15 +61,15 @@ pip install -r requirements.txt
 * **Lightweight Conflict Detection**: The system actively scans the uncompleted tasks and generates friendly warnings if multiple tasks are scheduled for the exact same time slot, alerting the owner without crashing the application.
 
 ## Testing PawPal+
-    Confidence Level - 5
-    python -m unittest tests/test_pawpal.py
-    The test suite currently includes 5 test cases that cover the core functionality of the PawPal system:
+Confidence Level - 5
+python -m unittest tests/test_pawpal.py
+The test suite currently includes 5 test cases that cover the core functionality of the PawPal system:
 
-    Task Completion (test_task_completion): Verifies that calling mark_complete() properly updates a task's status to is_completed = True.
-    Task Addition (test_task_addition): Ensures that when a task is added to a pet using add_task(), the pet's task count increases and the task's pet_name attribute is automatically updated to match the pet.
-    Sorting Correctness (test_sorting_correctness): Checks that the Scheduler successfully organizes a list of tasks in strictly chronological sequence based on their "HH:MM" times.
-    Recurrence Logic (test_recurrence_logic): Validates the automated scheduling engine; when a "Daily" recurring task is completed, it verifies that the original is marked complete and precisely one new task is instantiated for the following day.
-    Conflict Detection (test_conflict_detection): Confirms that if multiple incomplete tasks are scheduled closely at the exact same chronological time, the Scheduler properly detects the overlap and generates a conflict warning.
+Task Completion (test_task_completion): Verifies that calling mark_complete() properly updates a task's status to is_completed = True.
+Task Addition (test_task_addition): Ensures that when a task is added to a pet using add_task(), the pet's task count increases and the task's pet_name attribute is automatically updated to match the pet.
+Sorting Correctness (test_sorting_correctness): Checks that the Scheduler successfully organizes a list of tasks in strictly chronological sequence based on their "HH:MM" times.
+Recurrence Logic (test_recurrence_logic): Validates the automated scheduling engine; when a "Daily" recurring task is completed, it verifies that the original is marked complete and precisely one new task is instantiated for the following day.
+Conflict Detection (test_conflict_detection): Confirms that if multiple incomplete tasks are scheduled closely at the exact same chronological time, the Scheduler properly detects the overlap and generates a conflict warning.
  
 ## Demo
 
