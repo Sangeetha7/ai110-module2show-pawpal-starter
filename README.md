@@ -41,3 +41,10 @@ pip install -r requirements.txt
 5. Add tests to verify key behaviors.
 6. Connect your logic to the Streamlit UI in `app.py`.
 7. Refine UML so it matches what you actually built.
+
+### Smarter Scheduling
+    
+* **Chronological Sorting**: Tasks now include a time attribute (HH:MM format). The Scheduler can sort the owner's itinerary chronologically for better readability.
+* **Task Filtering**: Tasks can be filtered dynamically by specific pets or by completion status using an optimized single-pass algorithm.
+* **Automated Recurring Tasks**: Tasks now track a due_date. When a Daily or Weekly task is marked as complete, the scheduler automatically calculates the next occurrence using Python's datetime module and spawns a new instance.
+* **Lightweight Conflict Detection**: The system actively scans the uncompleted tasks and generates friendly warnings if multiple tasks are scheduled for the exact same time slot, alerting the owner without crashing the application.

@@ -22,11 +22,13 @@ def main():
     task2 = Task(name="Feed Buddy", duration=10, priority=1, time="07:30", description="Give morning kibble.")
     task3 = Task(name="Play with laser pointer", duration=20, priority=2, time="18:00", description="Cat playtime.")
     task4 = Task(name="Brush fur", duration=15, priority=3, time="14:00", description="Grooming.")
+    task5 = Task(name="Give Medication", duration=5, priority=1, time="08:00", description="Daily heartworm pill.") # Conflict with Morning Walk
 
     # Add tasks directly to their respective pets
     dog.add_task(task1)
     dog.add_task(task2)
     dog.add_task(task4)
+    dog.add_task(task5)
     cat.add_task(task3)
 
     # test filtering and sorting
@@ -53,7 +55,13 @@ def main():
     print(f"Buddy's tasks count is now: {len(dog.tasks)}")
     new_feed_task = dog.tasks[-1]
     print(f"A new task was spawned: {new_feed_task.name} with due date: {new_feed_task.due_date}")
-
+    print("\n--- Testing Conflict Detection ---")
+    conflicts = scheduler.detect_conflicts(owner.get_all_tasks())
+    if conflicts:
+        for warning in conflicts:
+            print(warning)
+    else:
+        print("No conflicts detected.")
     # 4. Generate the Schedule
     scheduler = Scheduler()
     plan = scheduler.generate_plan(owner)

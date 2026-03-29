@@ -120,6 +120,27 @@ class Scheduler:
             # Add the newly created recurring instance to the pet
             pet.add_task(new_task)
     
+    def detect_conflicts(self, tasks: List[Task]) -> List[str]:
+        """
+        Lightweight conflict detection strategy:
+        Checks if any uncompleted tasks share the same 'HH:MM' time slot.
+        Returns a list of warning messages rather than throwing an error.
+        """
+        warnings = []
+        uncompleted = [t for t in tasks if not t.is_completed]
+        time_map = {}
+
+        for task in uncompleted:
+            if task.time in time_map:
+                warnings.append(
+                    f"Warning: Conflict detected at {task.time}! "
+                    f"'{task.name}' overlaps with '{time_map[task.time].name}'."
+                )
+            else:
+                time_map[task.time] = task
+                
+        return warnings
+
     def generate_plan(self, owner: Owner) -> dict:
         """
         Retrieves all tasks across pets, sorts them by priority (1 is highest),
