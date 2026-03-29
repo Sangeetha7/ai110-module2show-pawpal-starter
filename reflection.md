@@ -5,13 +5,29 @@
 **a. Initial design**
 
 - Briefly describe your initial UML design.
+    Three core actions that the user should be able to perform are enter owner and pet information, manage care tasks, generate and view a daily plan. 
 - What classes did you include, and what responsibilities did you assign to each?
-
+   
+- What classes did you include, and what responsibilities did you assign to each?
+    I included four classes: Owner, Pet, CareTask and SchedulePlanner. 
+    * **Owner**: Responsible for holding the user's information and their availability
+    * **Pet**: Responsible for storing basic details about the pet
+    * **Task**: Responsible for tracking the specific details of a task, like the duration and priority level.
+    * **Scheduler**: Responsible for taking a list of CareTask objects and the Owner's time constraint, and applying logic to generate a prioritized daily schedule that fits within the available time.
+       
 **b. Design changes**
 
 - Did your design change during implementation?
+    Yes, my design changed  when I asked AI to review the skeleton 
 - If yes, describe at least one change and why you made it.
-
+    Missing Relationships:
+        In the initial design, tasks are not linked to specific pets. I changed this because if an owner has two pets, the scheduler will not know which pet the task is for
+        The scheduler is disconnected form the owner. It should either take an Owner object when it's initialized, or pass the Owner object to generate_plan(owner) so the scheduler has access to the owner's time constraints and pet list directly.
+    
+    Logic Bottlenecks:
+        Missing Unique IDs - Managing UI state across reloads can be tricky. If the user edits or removes a task, how to find exactly that task in a list? (e.g., if there are two tasks named "Walk")
+        Task State Tracking: The current Task has a duration and priority, but no way to know if it has been completed.
+        When sorting tasks, the logic needs to know if 1 means High or if bigger numbers mean higher priority
 ---
 
 ## 2. Scheduling Logic and Tradeoffs
