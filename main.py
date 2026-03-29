@@ -18,16 +18,30 @@ def main():
 
     # 3. Add at least three Tasks with different times/priorities
     # Priority 1 (High), 2 (Medium), 3 (Low)
-    task1 = Task(name="Morning Walk", duration=30, priority=1, description="Walk around the park.")
-    task2 = Task(name="Feed Buddy", duration=10, priority=1, description="Give morning kibble.")
-    task3 = Task(name="Play with laser pointer", duration=20, priority=2, description="Cat playtime.")
-    task4 = Task(name="Brush fur", duration=15, priority=3, description="Grooming.")
+    task1 = Task(name="Morning Walk", duration=30, priority=1, time="08:00", description="Walk around the park.")
+    task2 = Task(name="Feed Buddy", duration=10, priority=1, time="07:30", description="Give morning kibble.")
+    task3 = Task(name="Play with laser pointer", duration=20, priority=2, time="18:00", description="Cat playtime.")
+    task4 = Task(name="Brush fur", duration=15, priority=3, time="14:00", description="Grooming.")
 
     # Add tasks directly to their respective pets
     dog.add_task(task1)
     dog.add_task(task2)
     dog.add_task(task4)
     cat.add_task(task3)
+
+    # test filtering and sorting
+    scheduler = Scheduler()
+    all_tasks = owner.get_all_tasks()
+    
+    print("\n--- Testing Sorting by Time ---")
+    sorted_tasks = scheduler.sort_by_time(all_tasks)
+    for t in sorted_tasks:
+        print(f"[{t.time}] {t.name} for {t.pet_name}")
+
+    print("\n--- Testing Filtering (Buddy's Tasks) ---")
+    buddy_tasks = scheduler.filter_tasks(all_tasks, pet_name="Buddy")
+    for t in buddy_tasks:
+        print(f"{t.name} (Pet: {t.pet_name})")
 
     # 4. Generate the Schedule
     scheduler = Scheduler()

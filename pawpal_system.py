@@ -7,6 +7,7 @@ class Task:
     name: str
     duration: int  # in minutes
     priority: int  # 1 = High, 2 = Medium, 3 = Low
+    time: str = "12:00"  # HH:MM format
     pet_name: str = ""  # Automatically linked when added to a Pet
     description: str = ""
     frequency: str = "Daily"  # E.g., Daily, Weekly, Once
@@ -82,6 +83,19 @@ class Owner:
 
 class Scheduler:
     # A stateless scheduler, essentially acting as the logic "Brain" 
+    
+    def sort_by_time(self, tasks: List[Task]) -> List[Task]:
+        """Sorts tasks chronologically based on their 'HH:MM' time attribute."""
+        return sorted(tasks, key=lambda t: t.time)
+
+    def filter_tasks(self, tasks: List[Task], is_completed: Optional[bool] = None, pet_name: Optional[str] = None) -> List[Task]:
+        """Filters tasks by completion status or pet name."""
+        filtered = tasks
+        if is_completed is not None:
+            filtered = [t for t in filtered if t.is_completed == is_completed]
+        if pet_name:
+            filtered = [t for t in filtered if t.pet_name == pet_name]
+        return filtered
     
     def generate_plan(self, owner: Owner) -> dict:
         """
