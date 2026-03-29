@@ -43,6 +43,17 @@ def main():
     for t in buddy_tasks:
         print(f"{t.name} (Pet: {t.pet_name})")
 
+    print("\n--- Testing Recurring Logic ---")
+    print(f"Before completion: Buddy's tasks count: {len(dog.tasks)}")
+    
+    # Mark task2 ("Feed Buddy") as complete. It is 'Daily' by default.
+    scheduler.complete_task(dog, task2)
+    
+    print(f"After completing 'Feed Buddy', task2 is_completed: {task2.is_completed}")
+    print(f"Buddy's tasks count is now: {len(dog.tasks)}")
+    new_feed_task = dog.tasks[-1]
+    print(f"A new task was spawned: {new_feed_task.name} with due date: {new_feed_task.due_date}")
+
     # 4. Generate the Schedule
     scheduler = Scheduler()
     plan = scheduler.generate_plan(owner)

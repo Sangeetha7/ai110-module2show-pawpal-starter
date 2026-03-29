@@ -1,4 +1,5 @@
 import uuid
+import datetime
 from dataclasses import dataclass, field
 from typing import List, Optional
 
@@ -11,6 +12,7 @@ class Task:
     pet_name: str = ""  # Automatically linked when added to a Pet
     description: str = ""
     frequency: str = "Daily"  # E.g., Daily, Weekly, Once
+    due_date: datetime.date = field(default_factory=datetime.date.today)
     is_completed: bool = False
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
@@ -96,6 +98,27 @@ class Scheduler:
         if pet_name:
             filtered = [t for t in filtered if t.pet_name == pet_name]
         return filtered
+
+    def complete_task(self, pet: Pet, task: Task) -> None:
+        """Marks a task as complete and automatically spawns the next occurrence if recurring."""
+        task.mark_complete()
+
+        # Handle recurring logic
+        if task.frequency in ("Daily", "Weekly"):
+            days_to_add = 1 if task.frequency == "Daily" else 7
+            new_due_date = task.due_date + datetime.timedelta(days=days_to_add)
+
+            new_task = Task(
+                name=task.name,
+                duration=task.duration,
+                priority=task.priority,
+                time=task.time,
+                description=task.description,
+                frequency=task.frequency,
+                due_date=new_due_date
+            )
+            # Add the newly created recurring instance to the pet
+            pet.add_task(new_task)
     
     def generate_plan(self, owner: Owner) -> dict:
         """
