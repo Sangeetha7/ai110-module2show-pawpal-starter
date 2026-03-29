@@ -9,33 +9,19 @@ st.title("🐾 PawPal+")
 
 st.markdown(
     """
-Welcome to the PawPal+ starter app.
+Welcome to **PawPal+**!
 
-This file is intentionally thin. It gives you a working Streamlit app so you can start quickly,
-but **it does not implement the project logic**. Your job is to design the system and build it.
-
-Use this app as your interactive demo once your backend classes/functions exist.
+Managing a pet (or several!) on a tight schedule can be difficult. This app uses a custom-built 
+greedy scheduling algorithm to prioritize your most urgent pet tasks within the time you have available today.
 """
 )
 
-with st.expander("Scenario", expanded=True):
+with st.expander("How it works", expanded=True):
     st.markdown(
         """
-**PawPal+** is a pet care planning assistant. It helps a pet owner plan care tasks
-for their pet(s) based on constraints like time, priority, and preferences.
-
-You will design and implement the scheduling logic and connect it to this Streamlit UI.
-"""
-    )
-
-with st.expander("What you need to build", expanded=True):
-    st.markdown(
-        """
-At minimum, your system should:
-- Represent pet care tasks (what needs to happen, how long it takes, priority)
-- Represent the pet and the owner (basic info and preferences)
-- Build a plan/schedule for a day that chooses and orders tasks based on constraints
-- Explain the plan (why each task was chosen and when it happens)
+1. **Set Capacity**: Define your available free time for the day.
+2. **Add Pets & Tasks**: Create pets and assign them care tasks (like walks or grooming). Set task durations, time slots, and a priority level (1 is highest).
+3. **Smart Scheduling**: The system warns you of time conflicts, sorts tasks chronologically, and finally builds a daily plan summarizing what fits and what needs to be omitted!
 """
     )
 
@@ -92,7 +78,7 @@ st.caption("Add a few tasks. In your final version, these should feed into your 
 if "tasks" not in st.session_state:
     st.session_state.tasks = []
 
-col1, col2, col3, col4 = st.columns(4)
+col1, col2, col3, col_4_pet, col_5_time = st.columns(5)
 with col1:
     task_title = st.text_input("Task title", value="Morning walk")
 with col2:
@@ -102,36 +88,47 @@ with col3:
     # Map priority text to our integer system
     priority_mapping = {"High (1)": 1, "Medium (2)": 2, "Low (3)": 3}
     priority = priority_mapping[priority_level]
-with col4:
+with col_4_pet:
     # Select which pet this task is for
     if not st.session_state.owner.pets:
         st.warning("Add a pet first!")
         pet_options = []
     else:
         pet_options = [p.name for p in st.session_state.owner.pets]
-    
     selected_pet_name = st.selectbox("For Pet:", pet_options)
+with col_5_time:
+    time_val = st.text_input("Time (HH:MM)", value="12:00")
 
 if st.button("Add task"):
     if not selected_pet_name:
         st.error("You must select a pet for this task.")
     else:
         # Create the Task object
-        new_task = Task(name=task_title, duration=int(duration), priority=priority)
+        new_task = Task(name=task_title, duration=int(duration), priority=priority, time=time_val)
         
         # Find the pet and add it using the phase 2 logic
         for pet in st.session_state.owner.pets:
             if pet.name == selected_pet_name:
                 pet.add_task(new_task)
-                st.success(f"Added {task_title} to {pet.name}!")
+                st.success(f"Added {task_title} to {pet.name} at {time_val}!")
                 break
 
 all_current_tasks = st.session_state.owner.get_all_tasks()
 
 if all_current_tasks:
     st.write("Current pending tasks:")
-    # Format for clean display
-    task_data = [{"Task": t.name, "Pet": t.pet_name, "Duration": f"{t.duration}m", "Priority": t.priority} for t in all_current_tasks]
+    
+    # Check for scheduling conflicts
+    conflicts = st.session_state.scheduler.detect_conflicts(all_current_tasks)
+    if conflicts:
+        for warning in conflicts:
+            st.warning(warning)
+            
+    # Sort tasks chronologically using the Scheduler logic
+    sorted_tasks = st.session_state.scheduler.sort_by_time(all_current_tasks)
+    
+    # Format for clean display using a Streamlit table
+    task_data = [{"Time": t.time, "Task": t.name, "Pet": t.pet_name, "Duration": f"{t.duration}m", "Priority": t.priority} for t in sorted_tasks]
     st.table(task_data)
 else:
     st.info("No tasks yet. Add one above.")
